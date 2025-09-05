@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Home, BarChart, MessageSquare, Settings, Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
+import DashboardTable from "../components/DashboardTable";
 
 //Tyescrip error handling
 type NavItem = {
@@ -31,7 +32,7 @@ export default function DashboardPage() {
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow p-4 flex items-center justify-between z-20">
         <span className="text-lg font-bold text-gray-800 dark:text-gray-100">AI Dashboard</span>
         <div className="flex items-center gap-2">
-            {/*Dark Theme */}
+          {/*Dark Theme */}
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -61,7 +62,7 @@ export default function DashboardPage() {
             {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
         </div>
-         
+
         {/* Mapped Item Navigation Button */}
         <nav className="flex-1 px-2 space-y-2 mt-16 md:mt-0">
           {navItems.map((item) => (
@@ -90,6 +91,12 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-semibold mb-4 capitalize">{active}</h1>
         <div className="bg-white dark:bg-gray-800 shadow rounded-2xl p-6 min-h-[400px]">
           <p>Welcome to the {active} section 🚀</p>
+
+          <div className="p-6">
+            <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+            <DashboardTable />
+          </div>
+          
         </div>
       </main>
     </div>
