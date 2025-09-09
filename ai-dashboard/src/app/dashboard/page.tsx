@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Home, BarChart, MessageSquare, Settings, Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import DashboardTable from "../components/DashboardTable";
+import HeatmapOverview from "../components/HeatmapOverview";
 
 //Tyescrip error handling
 type NavItem = {
@@ -92,10 +93,12 @@ export default function DashboardPage() {
         <div className="bg-white dark:bg-gray-800 shadow rounded-2xl p-6 min-h-[400px]">
           <p>Welcome to the {active} section 🚀</p>
 
-          <div className="p-6">
+          <HeatmapOverview url="https://www.reaktwebdesign.co.uk" />
+
+         {/*} <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
             <DashboardTable />
-          </div>
+          </div> */}
           
         </div>
       </main>
