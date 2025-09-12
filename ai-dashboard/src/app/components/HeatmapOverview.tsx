@@ -82,8 +82,8 @@ const HeatmapOverview = () => {
 
   setClicks(
     events.map(event => ({
-      x: (event.x / originalWidth) * targetWidth * 0.85,
-      y: (event.y / originalHeight) * targetHeight * 0.85,
+      x: (event.x / originalWidth) * targetWidth * 0.75, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
+      y: (event.y / originalHeight) * targetHeight * 0.85, // see above
       intensity: 3,
     }))
   );
