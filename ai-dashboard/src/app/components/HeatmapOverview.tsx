@@ -51,6 +51,7 @@ const HeatmapOverview = () => {
 
   useEffect(() => {
     if (!canvasRef.current || clicks.length === 0) return;
+    
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -70,6 +71,23 @@ const HeatmapOverview = () => {
     });
   }, [clicks, overlay]);
 
+  useEffect(() => {
+  if (events.length === 0) return;
+
+  const originalWidth = 1440;
+  const originalHeight = 900;
+
+  const targetWidth = overlay ? 1440 : 800;
+  const targetHeight = overlay ? 900 : 600;
+
+  setClicks(
+    events.map(event => ({
+      x: (event.x / originalWidth) * targetWidth * 0.85,
+      y: (event.y / originalHeight) * targetHeight * 0.85,
+      intensity: 3,
+    }))
+  );
+}, [events, overlay]);
 
   return (
     <div className="p-4">
