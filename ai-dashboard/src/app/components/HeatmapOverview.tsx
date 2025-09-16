@@ -2,11 +2,11 @@ import { useEffect, useState, useRef } from "react";
 
 
 
-
-const HeatmapOverview = () => {
+  const HeatmapOverview = () => {
   const [screenshotUrl, setScreenshotUrl] = useState(null)
 
-  //set events to pull data
+
+  //set events to pull data from supabase
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -51,7 +51,7 @@ const HeatmapOverview = () => {
 
   useEffect(() => {
     if (!canvasRef.current || clicks.length === 0) return;
-    
+
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -72,22 +72,22 @@ const HeatmapOverview = () => {
   }, [clicks, overlay]);
 
   useEffect(() => {
-  if (events.length === 0) return;
+    if (events.length === 0) return;
 
-  const originalWidth = 1440;
-  const originalHeight = 900;
+    const originalWidth = 1440;
+    const originalHeight = 900;
 
-  const targetWidth = overlay ? 1440 : 800;
-  const targetHeight = overlay ? 900 : 600;
+    const targetWidth = overlay ? 1440 : 800;
+    const targetHeight = overlay ? 900 : 600;
 
-  setClicks(
-    events.map(event => ({
-      x: (event.x / originalWidth) * targetWidth * 0.75, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
-      y: (event.y / originalHeight) * targetHeight * 0.85, // see above
-      intensity: 3,
-    }))
-  );
-}, [events, overlay]);
+    setClicks(
+      events.map(event => ({
+        x: (event.x / originalWidth) * targetWidth * 0.75, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
+        y: (event.y / originalHeight) * targetHeight * 0.85, // see above
+        intensity: 3,
+      }))
+    );
+  }, [events, overlay]);
 
   return (
     <div className="p-4">
@@ -136,8 +136,10 @@ const HeatmapOverview = () => {
             />
           </div>
         </div>
+        
       )}
-      <table className="min-w-full border border-gray-300">
+
+     {/*} <table className="min-w-full border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
             <th className="px-4 py-2 border-b">Section ID</th>
@@ -164,7 +166,7 @@ const HeatmapOverview = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
     </div>
 
   );

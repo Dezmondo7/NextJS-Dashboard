@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Home, BarChart, MessageSquare, Settings, Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import DashboardTable from "../components/DashboardTable";
 import HeatmapOverview from "../components/HeatmapOverview";
 
-//Tyescrip error handling
+//Tyescript error handling
 type NavItem = {
   id: string;
   label: string;
@@ -21,11 +21,43 @@ export default function DashboardPage() {
 
   //Navigation
   const navItems: NavItem[] = [
-    { id: "overview", label: "Overview", icon: <Home size={20} /> },
-    { id: "analytics", label: "Analytics", icon: <BarChart size={20} /> },
-    { id: "chat", label: "AI Chat", icon: <MessageSquare size={20} /> },
+    { id: "overview", label: "Live View", icon: <Home size={20} /> },
+    { id: "analytics", label: "Weekly View", icon: <BarChart size={20} /> },
+    { id: "chat", label: "Monthly Campaign View", icon: <MessageSquare size={20} /> },
+    { id: "Content", label: "Content View", icon: <MessageSquare size={20} /> },
+    { id: "AI", label: "AI Analysis", icon: <MessageSquare size={20} /> },
     { id: "settings", label: "Settings", icon: <Settings size={20} /> },
   ];
+
+
+  const [events, setEvents] = useState([]);     
+  const [uniqueVisitors, setUniqueVisitors] = useState(0);;
+
+  useEffect(() => {
+    fetch("https://kreativeweb3dsupabse.onrender.com/dashboard-data")
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          const allEvents = result.data;
+          setEvents(allEvents);
+
+          const last24hEvents = allEvents.filter(
+            event => new Date(event.created_at).getTime() >= Date.now() - 24 * 60 * 60 * 1000
+          );
+
+          const uniqueCount = new Set(last24hEvents.map(event => event.session_id)).size;
+          setUniqueVisitors(uniqueCount);
+        }
+      })
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
+
+      
+  fetch("/unique-visitors-24h")
+  .then(res => res.json())
+  .then(data => setUniqueVisitors(data.count));
+  
+  }, []);
+
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -93,13 +125,25 @@ export default function DashboardPage() {
         <div className="bg-white dark:bg-gray-800 shadow rounded-2xl p-6 min-h-[400px]">
           <p>Welcome to the {active} section 🚀</p>
 
-          <HeatmapOverview  />
+          <HeatmapOverview />
 
-         {/*} <div className="p-6">
+          <div className="data flex mb-20 mt-20">
+            <div className="flex-1 justify-start p-2 bg-gray-100 rounded">
+              <p>Live Visitors 56 {uniqueVisitors}</p>
+            </div>
+            <div className="flex-1 p-2 bg-gray-100 rounded">
+              <p>CTA's clicked 78</p>
+            </div>
+            <div className="flex-1 p-2 bg-gray-100 rounded">
+              <p>Average Time spent 99</p>
+            </div>
+          </div>
+
+          {/*} <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
             <DashboardTable />
           </div> */}
-          
+
         </div>
       </main>
     </div>
