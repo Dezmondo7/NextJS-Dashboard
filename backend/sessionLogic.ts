@@ -24,9 +24,8 @@ const getSessions = async (req: Request, res: Response ) => {
        
 
     if (error) throw error;
-     const uniqueSessions = Array.from(new Set(data.map(e => e.session_id)));
 
-    res.json({ success: true, data, uniqueCount: uniqueSessions.length });
+    res.json({ success: true, data });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
