@@ -18,9 +18,9 @@ const getSessions = async (req: Request, res: Response ) => {
   try {
     const { data, error } = await supabase
       .from("heatmap_events")
-      .select("id, section_id, session_id, event_type, x, y, time_spent, cta_id, created_at")
+      .select("session_id, created_at")
       .order("created_at", { ascending: false })
-      .limit(1000); // This caps heatmpa events to rows of 150 which is great for the lie feeds and works on page refresh
+      .limit(50000); // This caps heatmpa events to rows of 150 which is great for the lie feeds and works on page refresh
 
     if (error) throw error;
 

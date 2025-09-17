@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const [uniqueVisitors, setUniqueVisitors] = useState(0);
 
   useEffect(() => {
-    fetch("https://kreativeweb3dsupabse.onrender.com/api/session-data")
+    fetch("https://nextjs-dashboard-2-w217.onrender.com/api/session-data")
       .then(res => res.json())
       .then(result => {
         if (result.success) {
