@@ -31,10 +31,10 @@ export default function DashboardPage() {
 
 
   const [events, setEvents] = useState([]);     
-  const [uniqueVisitors, setUniqueVisitors] = useState(0);;
+  const [uniqueVisitors, setUniqueVisitors] = useState(0);
 
   useEffect(() => {
-    fetch("https://kreativeweb3dsupabse.onrender.com/session-data")
+    fetch("https://kreativeweb3dsupabse.onrender.com/api/session-data")
       .then(res => res.json())
       .then(result => {
         if (result.success) {
@@ -49,12 +49,7 @@ export default function DashboardPage() {
           setUniqueVisitors(uniqueCount);
         }
       })
-      .catch(err => console.error("Failed to fetch dashboard data:", err));
-
-      
-  fetch("/unique-visitors-24h")
-  .then(res => res.json())
-  .then(data => setUniqueVisitors(data.count));
+      .catch(err => console.error("Failed to fetch dashboard visitor data:", err));
   
   }, []);
 
