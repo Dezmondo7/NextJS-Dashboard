@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from "react";
+import LiveCounter from './LiveCounter.tsx'
+
 
 
 
@@ -82,7 +84,7 @@ import { useEffect, useState, useRef } from "react";
 
     setClicks(
       events.map(event => ({
-        x: (event.x / originalWidth) * targetWidth * 0.85, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
+        x: (event.x / originalWidth) * targetWidth * 0.75, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
         y: (event.y / originalHeight) * targetHeight * 0.75, // see above
         intensity: 3,
       }))
@@ -136,6 +138,7 @@ import { useEffect, useState, useRef } from "react";
             />
           </div>
         </div>
+
         
       )}
 
@@ -168,6 +171,7 @@ import { useEffect, useState, useRef } from "react";
         </tbody>
       </table> */}
     </div>
+
 
   );
 };

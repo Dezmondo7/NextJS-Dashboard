@@ -5,6 +5,8 @@ import { Home, BarChart, MessageSquare, Settings, Sun, Moon, Menu, X } from "luc
 import { useTheme } from "next-themes";
 import DashboardTable from "../components/DashboardTable";
 import HeatmapOverview from "../components/HeatmapOverview";
+import LiveCount from '../components/LiveCounter';
+import LiveCounter from "../components/LiveCounter";
 
 //Tyescript error handling
 type NavItem = {
@@ -121,20 +123,7 @@ export default function DashboardPage() {
           <p>Welcome to the {active} section 🚀</p>
 
           <HeatmapOverview />
-
-          <div className="data flex mb-20 mt-20">
-            <div className="flex-1 justify-start p-2 bg-gray-100 rounded">
-              <p>Live Visitors 56 {uniqueVisitors}</p>
-            </div>
-            <div className="flex-1 p-2 bg-gray-100 rounded">
-              <p>CTA's clicked 78</p>
-            </div>
-            <div className="flex-1 p-2 bg-gray-100 rounded">
-              <p>Average Time spent 99</p>
-            </div>
-          </div>
-
-          {/*} <div className="p-6">
+         {/*} <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
             <DashboardTable />
           </div> */}
