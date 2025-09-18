@@ -16,11 +16,13 @@ const supabase = createClient(
 const getSessions = async (req: Request, res: Response ) => {
   console.log("📌 DashboardTable.jsx request received"); // clear indicator
   try {
-    const today = new Date().toISOString().split("T")[0]; // "2025-09-18"
-    const { data, error } = await supabase
+    
+      const todayStr = new Date().toISOString().split("T")[0];
+       
+       const { data, error } = await supabase
       .from("heatmap_events")
       .select("session_id, created_at")
-      .eq("created_at::date", today)   // 👈 only today’s rows
+      .gte("created_at::date", todayStr)   // 👈 only today’s rows
       .order("created_at", { ascending: false })
       .limit(50000); // This caps heatmpa events to rows of 150 which is great for the lie feeds and works on page refresh
        
