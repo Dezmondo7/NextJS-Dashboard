@@ -74,16 +74,16 @@ import { useEffect, useState, useRef } from "react";
   useEffect(() => {
     if (events.length === 0) return;
 
-    const originalWidth = 1440;
+    const originalWidth = 1400;
     const originalHeight = 900;
 
-    const targetWidth = overlay ? 1440 : 800;
+    const targetWidth = overlay ? 1400 : 800;
     const targetHeight = overlay ? 900 : 600;
 
     setClicks(
       events.map(event => ({
-        x: (event.x / originalWidth) * targetWidth * 0.75, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
-        y: (event.y / originalHeight) * targetHeight * 0.85, // see above
+        x: (event.x / originalWidth) * targetWidth * 0.85, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
+        y: (event.y / originalHeight) * targetHeight * 0.75, // see above
         intensity: 3,
       }))
     );
@@ -110,7 +110,7 @@ import { useEffect, useState, useRef } from "react";
           <canvas
             ref={canvasRef}
             className="absolute top-0 left-0 pointer-events-none"
-            width={1440}
+            width={1400}
             height={900}
             style={{ width: "100%", height: "auto" }}
           />

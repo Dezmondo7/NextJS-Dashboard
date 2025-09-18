@@ -30,7 +30,7 @@ export default function DashboardPage() {
   ];
 
 
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);     
   const [uniqueVisitors, setUniqueVisitors] = useState(0);
 
   useEffect(() => {
@@ -41,25 +41,16 @@ export default function DashboardPage() {
           const allEvents = result.data;
           setEvents(allEvents);
 
-          const startOfDay = new Date();
-          startOfDay.setHours(0, 0, 0, 0); // 12:00 AM today
+          const last24hEvents = allEvents.filter(
+            event => new Date(event.created_at).getTime() >= Date.now() - 24 * 60 * 60 * 1000
+          );
 
-          const endOfDay = new Date();
-          endOfDay.setHours(23, 59, 59, 999); // 11:59:59 PM today
-
-          const todayEvents = allEvents.filter(event => {
-            const created = new Date(event.created_at);
-            return created >= startOfDay && created <= endOfDay;
-          });
-
-          const uniqueCount = new Set(todayEvents.map(e => e.session_id)).size;
+          const uniqueCount = new Set(last24hEvents.map(event => event.session_id)).size;
           setUniqueVisitors(uniqueCount);
-
-
         }
       })
       .catch(err => console.error("Failed to fetch dashboard visitor data:", err));
-
+  
   }, []);
 
 
