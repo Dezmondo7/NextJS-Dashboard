@@ -84,8 +84,8 @@ import LiveCounter from './LiveCounter.tsx'
 
     setClicks(
       events.map(event => ({
-        x: (event.x / originalWidth) * targetWidth * 0.75, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
-        y: (event.y / originalHeight) * targetHeight * 0.75, // see above
+        x: (event.x / originalWidth) * targetWidth * 0.85, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
+        y: (event.y / originalHeight) * targetHeight * 0.80, // see above
         intensity: 3,
       }))
     );
@@ -103,18 +103,20 @@ import LiveCounter from './LiveCounter.tsx'
 
       {overlay ? (
         // Overlay mode: canvas on top of screenshot
-        <div className="relative w-full max-w-5xl mx-auto">
+        <div className="relative w-full max-w-5xl aspect-h-9 mx-auto">
           <img
             src={screenshotUrl}
             alt="Landing Page Screenshot"
-            className="w-full h-auto block"
+            width={1400}
+            height={900}
+            className="w-full h-full block object-cover"
           />
           <canvas
             ref={canvasRef}
-            className="absolute top-0 left-0 pointer-events-none"
+            className="absolute top-0 left-0 pointer-events-none h-full w-full"
             width={1400}
             height={900}
-            style={{ width: "100%", height: "auto" }}
+           // style={{ width: "100%", height: "auto" }}
           />
         </div>
       ) : (
@@ -123,6 +125,8 @@ import LiveCounter from './LiveCounter.tsx'
           <div className="md:w-2/3 w-full bg-gray-100 flex justify-center items-center">
             <img
               src={screenshotUrl}
+              width={800}
+              height={600}
               alt="Landing Page Screenshot"
               className="w-full h-auto object-contain rounded shadow"
             />
