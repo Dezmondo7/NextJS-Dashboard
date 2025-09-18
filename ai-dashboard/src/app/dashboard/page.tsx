@@ -41,11 +41,11 @@ export default function DashboardPage() {
           const allEvents = result.data;
           setEvents(allEvents);
 
-          const last24hEvents = allEvents.filter(
-            event => new Date(event.created_at).getTime() >= Date.now() - 24 * 60 * 60 * 1000
-          );
+         // const last24hEvents = allEvents.filter(
+          //   event => new Date(event.created_at).getTime() >= Date.now() - 24 * 60 * 60 * 1000
+          //  );
 
-          const uniqueCount = new Set(last24hEvents.map(event => event.session_id)).size;
+          const uniqueCount = new Set(allEvents.map(event => event.session_id)).size;
           setUniqueVisitors(uniqueCount);
         }
       })
