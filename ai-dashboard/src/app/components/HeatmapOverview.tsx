@@ -84,8 +84,8 @@ import LiveCounter from './LiveCounter.tsx'
 
     setClicks(
       events.map(event => ({
-        x: (event.x / originalWidth) * targetWidth * 0.85, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
-        y: (event.y / originalHeight) * targetHeight * 0.80, // see above
+        x: (event.x / originalWidth) * targetWidth, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
+        y: (event.y / originalHeight) * targetHeight , // see above
         intensity: 3,
       }))
     );
