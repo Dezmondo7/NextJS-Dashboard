@@ -116,7 +116,7 @@ import LiveCounter from './LiveCounter.tsx'
             className="absolute top-0 left-0 pointer-events-none h-full w-full"
             width={1400}
             height={900}
-           // style={{ width: "100%", height: "auto" }}
+         // style={{ width: "100%", height: "auto" }}
           />
         </div>
       ) : (
@@ -138,7 +138,7 @@ import LiveCounter from './LiveCounter.tsx'
               className="border border-gray-300 mt-4"
               width={800}
               height={600}
-              style={{ width: "100%", height: "auto" }}
+            style={{ width: "100%", height: "auto" }}
             />
            
           </div>

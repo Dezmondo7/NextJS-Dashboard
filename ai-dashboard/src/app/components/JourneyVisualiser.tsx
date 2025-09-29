@@ -28,8 +28,8 @@ import LiveCounter from './LiveCounter.tsx'
   }, []);
 
 
-
-  const [clicks, setClicks] = useState([]);
+ 
+  const [clicks, setClicks] = useState<{x:number, y:number}[]>([]);
 
   useEffect(() => {
     if (events.length === 0) return; // wait until events are loaded
@@ -37,7 +37,7 @@ import LiveCounter from './LiveCounter.tsx'
     setClicks(events.map(event => ({
       x: event.x,
       y: event.y,
-      intensity: 3, // or use a value from event if needed
+     // intensity: 3, // or use a value from event if needed
     })));
   }, [events]);
 
@@ -57,21 +57,39 @@ import LiveCounter from './LiveCounter.tsx'
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+
+   //  full screen / high DPI
+   /* const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    ctx.scale(dpr, dpr); */
+
     // Clear previous render
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    clicks.forEach(({ x, y, intensity }) => {
-      const radius = 30; // spread of the heat
-      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    //gradient from start to end
+    const grad = ctx.createLinearGradient(
+      clicks[0].x,
+      clicks[0].y,
+      clicks[clicks.length -1].x,
+      clicks[clicks.length -1].y
+    );
+    grad.addColorStop(0, "#a0eaff");
+    grad.addColorStop(1, "#a020f0")
 
-      // More intensity → more opaque center
-      gradient.addColorStop(0, `rgba(255,0,0,${Math.min(0.8, 0.2 * intensity)})`);
-      gradient.addColorStop(1, "rgba(255,0,0,0)");
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
 
-      ctx.fillStyle = gradient;
-      ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+    clicks.forEach((p, i ) => {
+      if ( i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y)
     });
-  }, [clicks, overlay]);
+
+    ctx.stroke();
+  }, [clicks]);
 
   useEffect(() => {
     if (events.length === 0) return;
