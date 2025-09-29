@@ -98,7 +98,7 @@ import LiveCounter from './LiveCounter.tsx'
         onClick={() => setOverlay(!overlay)}
         className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
       >
-        {overlay ? "Side-by-Side Mode" : "Overlay Mode"}
+        {overlay ? "Side-by-Side Mode" : "Journey Mode"}
       </button>
 
       {overlay ? (
