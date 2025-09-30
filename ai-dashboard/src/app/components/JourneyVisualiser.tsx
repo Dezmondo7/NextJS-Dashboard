@@ -4,7 +4,7 @@ import LiveCounter from './LiveCounter.tsx'
 
 
 
-  const HeatmapOverview = () => {
+const JourneyVisualiser = () => {
   const [screenshotUrl, setScreenshotUrl] = useState(null)
 
 
@@ -28,17 +28,30 @@ import LiveCounter from './LiveCounter.tsx'
   }, []);
 
 
- 
-  const [clicks, setClicks] = useState<{x:number, y:number}[]>([]);
+
+  const [clicks, setClicks] = useState<{ x: number, y: number }[]>([]);
 
   useEffect(() => {
     if (events.length === 0) return; // wait until events are loaded
 
-    setClicks(events.map(event => ({
-      x: event.x,
-      y: event.y,
-     // intensity: 3, // or use a value from event if needed
-    })));
+    // 1️Get all unique session IDs - need to identify just one session on the screen to stop multiple visits data showing on screen.
+    const sessionIds = [...new Set(events.map(e => e.session_id))];
+
+    // 2️⃣ - Choose one session to visualize (here: the first one)
+    const selectedSessionId = sessionIds[0];
+    console.log("Using session:", selectedSessionId); // optional
+
+    // 3️⃣ - Filter only that session's events
+    const filtered = events
+      .filter(e => e.session_id === selectedSessionId)
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // ensure chronological order this is crucial to get the most recent data frpom supabase
+
+    setClicks(
+      filtered.map(event => ({
+        x: event.x,
+        y: event.y,
+        // intensity: 3, // or use a value from event if needed
+      })));
   }, [events]);
 
 
@@ -58,13 +71,13 @@ import LiveCounter from './LiveCounter.tsx'
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-   //  full screen / high DPI
-   /* const dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
-    ctx.scale(dpr, dpr); */
+    //  full screen / high DPI
+    /* const dpr = window.devicePixelRatio || 1;
+     canvas.width = window.innerWidth * dpr;
+     canvas.height = window.innerHeight * dpr;
+     canvas.style.width = `${window.innerWidth}px`;
+     canvas.style.height = `${window.innerHeight}px`;
+     ctx.scale(dpr, dpr); */
 
     // Clear previous render
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -73,8 +86,8 @@ import LiveCounter from './LiveCounter.tsx'
     const grad = ctx.createLinearGradient(
       clicks[0].x,
       clicks[0].y,
-      clicks[clicks.length -1].x,
-      clicks[clicks.length -1].y
+      clicks[clicks.length - 1].x,
+      clicks[clicks.length - 1].y
     );
     grad.addColorStop(0, "#a0eaff");
     grad.addColorStop(1, "#a020f0")
@@ -83,8 +96,8 @@ import LiveCounter from './LiveCounter.tsx'
     ctx.lineWidth = 2;
     ctx.beginPath();
 
-    clicks.forEach((p, i ) => {
-      if ( i === 0) ctx.moveTo(p.x, p.y);
+    clicks.forEach((p, i) => {
+      if (i === 0) ctx.moveTo(p.x, p.y);
       else ctx.lineTo(p.x, p.y)
     });
 
@@ -103,7 +116,7 @@ import LiveCounter from './LiveCounter.tsx'
     setClicks(
       events.map(event => ({
         x: (event.x / originalWidth) * targetWidth, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
-        y: (event.y / originalHeight) * targetHeight , // see above
+        y: (event.y / originalHeight) * targetHeight, // see above
         intensity: 3,
       }))
     );
@@ -134,7 +147,7 @@ import LiveCounter from './LiveCounter.tsx'
             className="absolute top-0 left-0 pointer-events-none h-full w-full"
             width={1400}
             height={900}
-           // style={{ width: "100%", height: "auto" }}
+          // style={{ width: "100%", height: "auto" }}
           />
         </div>
       ) : (
@@ -158,15 +171,15 @@ import LiveCounter from './LiveCounter.tsx'
               height={600}
               style={{ width: "100%", height: "auto" }}
             />
-           
+
           </div>
-        
+
         </div>
 
-        
+
       )}
 
-     {/*} <table className="min-w-full border border-gray-300">
+      {/*} <table className="min-w-full border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
             <th className="px-4 py-2 border-b">Section ID</th>
@@ -200,4 +213,4 @@ import LiveCounter from './LiveCounter.tsx'
   );
 };
 
-export default HeatmapOverview;
+export default JourneyVisualiser;

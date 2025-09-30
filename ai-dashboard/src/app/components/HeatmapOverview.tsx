@@ -34,7 +34,20 @@ import LiveCounter from './LiveCounter.tsx'
   useEffect(() => {
     if (events.length === 0) return; // wait until events are loaded
 
-    setClicks(events.map(event => ({
+    // 1️Get all unique session IDs - need to identify just one session on the screen to stop multiple visits data showing on screen.
+    const sessionIds = [...new Set(events.map(e => e.session_id))];
+
+    // 2️⃣ - Choose one session to visualize (here: the first one)
+    const selectedSessionId = sessionIds[0];
+    console.log("Using session:", selectedSessionId); // optional
+
+    // 3️⃣ - Filter only that session's events
+    const filtered = events
+      .filter(e => e.session_id === selectedSessionId)
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    setClicks(
+      filtered.map(event => ({
       x: event.x,
       y: event.y,
       intensity: 3, // or use a value from event if needed
