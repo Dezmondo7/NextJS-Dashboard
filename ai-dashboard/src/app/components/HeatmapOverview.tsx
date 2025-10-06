@@ -33,14 +33,13 @@ const HeatmapOverview = () => {
   }, []);
 
 
-
   const [clicks, setClicks] = useState([]);
 
 
   useEffect(() => {
     if (events.length === 0) return; // wait until events are loaded
 
-    // 1Get all unique session IDs - need to identify just one session on the screen to stop multiple visits data showing on screen.
+    // Get all unique session IDs - need to identify just one session on the screen to stop multiple visits data showing on screen.
     const sessionIds = [...new Set(events.map(e => e.session_id))];
 
 
@@ -115,15 +114,20 @@ const HeatmapOverview = () => {
 
     const targetWidth = overlay ? 1400 : 800;
     const targetHeight = overlay ? 900 : 600;
+      
+      // selecting sessionIds and filtering through to match the correct selected session
+      const selectedSessionId = sessionIds[currentSessionIndex];
+      const filteredEvents = events.filter(e => e.session_id === selectedSessionId);
 
     setClicks(
-      events.map(event => ({
+      // mapping through the new filtered events to display the correctly matched session
+      filteredEvents.map(event => ({
         x: (event.x / originalWidth) * targetWidth, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
         y: (event.y / originalHeight) * targetHeight, // see above
         intensity: 3,
       }))
     );
-  }, [events, overlay]);
+  }, [events, overlay, sessionIds, currentSessionIndex]);
 
   return (
     <div className="p-4">
