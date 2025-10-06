@@ -4,7 +4,7 @@ import LiveCounter from './LiveCounter.tsx'
 
 
 
-  const HeatmapOverview = () => {
+const HeatmapOverview = () => {
   const [screenshotUrl, setScreenshotUrl] = useState(null)
 
 
@@ -12,12 +12,17 @@ import LiveCounter from './LiveCounter.tsx'
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
+  const [sessionIds, setSessionIds] = useState<string[]>([]);
+
   useEffect(() => {
     fetch("https://kreativeweb3dsupabse.onrender.com/dashboard-data")
       .then((res) => res.json())
       .then((result) => {
         if (result.success) {
           setEvents(result.data);
+        //counting the data rows returned - this returns the fetch call in the front end (.limit(1000)) (testServer / app.get(/dashboard-data))
+          console.log("📊 Total events returned:", result.data.length);  
         }
         setLoading(false);
       })
@@ -31,15 +36,30 @@ import LiveCounter from './LiveCounter.tsx'
 
   const [clicks, setClicks] = useState([]);
 
+
   useEffect(() => {
     if (events.length === 0) return; // wait until events are loaded
 
-    // 1️Get all unique session IDs - need to identify just one session on the screen to stop multiple visits data showing on screen.
+    // 1Get all unique session IDs - need to identify just one session on the screen to stop multiple visits data showing on screen.
     const sessionIds = [...new Set(events.map(e => e.session_id))];
 
+
+    // Sort them by first event timestamp (so “previous” and “next” make sense)
+    const orderedSessionIds = sessionIds.sort((a, b) => {
+      const aTime = new Date(events.find(e => e.session_id === a).timestamp);
+      const bTime = new Date(events.find(e => e.session_id === b).timestamp);
+      return aTime - bTime;
+    })
+
+    setSessionIds(orderedSessionIds);
+    setCurrentSessionIndex(0);
+
+
     // 2️⃣ - Choose one session to visualize (here: the first one)
-    const selectedSessionId = sessionIds[0];
+    const selectedSessionId = sessionIds[currentSessionIndex];
     console.log("Using session:", selectedSessionId); // optional
+    console.log("Ordered sessions:", orderedSessionIds); //orderingSessions for performance review
+   // console.log("Number of events fetched", orderedSessionIds.data.length)
 
     // 3️⃣ - Filter only that session's events
     const filtered = events
@@ -48,10 +68,10 @@ import LiveCounter from './LiveCounter.tsx'
 
     setClicks(
       filtered.map(event => ({
-      x: event.x,
-      y: event.y,
-      intensity: 3, // or use a value from event if needed
-    })));
+        x: event.x,
+        y: event.y,
+        intensity: 3, // or use a value from event if needed
+      })));
   }, [events]);
 
 
@@ -86,6 +106,7 @@ import LiveCounter from './LiveCounter.tsx'
     });
   }, [clicks, overlay]);
 
+  //Canvas overlay
   useEffect(() => {
     if (events.length === 0) return;
 
@@ -98,7 +119,7 @@ import LiveCounter from './LiveCounter.tsx'
     setClicks(
       events.map(event => ({
         x: (event.x / originalWidth) * targetWidth, //the *0.85 takes into consideration aspect ratio distortion .5% threshold the front end (adjustable per section)
-        y: (event.y / originalHeight) * targetHeight , // see above
+        y: (event.y / originalHeight) * targetHeight, // see above
         intensity: 3,
       }))
     );
@@ -113,6 +134,32 @@ import LiveCounter from './LiveCounter.tsx'
       >
         {overlay ? "Side-by-Side Mode" : "Overlay Mode"}
       </button>
+
+      {/* Previous and next session button */}
+      <div className="flex items-center gap-4 mb-4">
+        <button
+          onClick={() => setCurrentSessionIndex(i => Math.max(i - 1, 0))}
+          disabled={currentSessionIndex === 0}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          ← Previous Session
+        </button>
+
+        <span>
+          Session {currentSessionIndex + 1} of {sessionIds.length}
+          ({sessionIds[currentSessionIndex]})
+        </span>
+
+        <button
+          onClick={() => setCurrentSessionIndex(i => Math.min(i + 1, sessionIds.length - 1))}
+          disabled={currentSessionIndex === sessionIds.length - 1}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next Session →
+        </button>
+      </div>
+
+
 
       {overlay ? (
         // Overlay mode: canvas on top of screenshot
@@ -129,7 +176,7 @@ import LiveCounter from './LiveCounter.tsx'
             className="absolute top-0 left-0 pointer-events-none h-full w-full"
             width={1400}
             height={900}
-         // style={{ width: "100%", height: "auto" }}
+          // style={{ width: "100%", height: "auto" }}
           />
         </div>
       ) : (
@@ -151,17 +198,17 @@ import LiveCounter from './LiveCounter.tsx'
               className="border border-gray-300 mt-4"
               width={800}
               height={600}
-            style={{ width: "100%", height: "auto" }}
+              style={{ width: "100%", height: "auto" }}
             />
-           
+
           </div>
-        
+
         </div>
 
-        
+
       )}
 
-     {/*} <table className="min-w-full border border-gray-300">
+      {/*} <table className="min-w-full border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
             <th className="px-4 py-2 border-b">Section ID</th>
