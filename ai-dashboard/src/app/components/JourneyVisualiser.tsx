@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import LiveCounter from './LiveCounter.tsx'
+import * as d3 from "d3";
 
 
 
@@ -50,6 +50,7 @@ const JourneyVisualiser = () => {
       filtered.map(event => ({
         x: event.x,
         y: event.y,
+        timestamp: new Date(event.timestamp).getTime()
         // intensity: 3, // or use a value from event if needed
       })));
   }, [events]);
@@ -63,6 +64,37 @@ const JourneyVisualiser = () => {
     // The URL of the backend endpoint
     setScreenshotUrl("http://localhost:5000/screenshot")
   }, []);
+
+  const resampleClicks = (clicks, windowMs = 500) => {
+    const result = [];
+    if (!clicks.length) return result;
+
+    let windowStart = clicks[0].timestamp;
+    let windowPoints = [];
+
+    clicks.forEach(p => {
+      if (p.timestamp - windowStart <= windowMs) {
+        windowPoints.push(p);
+      } else {
+        // average the window
+        const avgX = windowPoints.reduce((sum, p) => sum + p.x, 0) / windowPoints.length;
+        const avgY = windowPoints.reduce((sum, p) => sum + p.y, 0) / windowPoints.length;
+        result.push({ x: avgX, y: avgY });
+
+        windowStart = p.timestamp;
+        windowPoints = [p];
+      }
+    });
+
+    // last window
+    if (windowPoints.length) {
+      const avgX = windowPoints.reduce((sum, p) => sum + p.x, 0) / windowPoints.length;
+      const avgY = windowPoints.reduce((sum, p) => sum + p.y, 0) / windowPoints.length;
+      result.push({ x: avgX, y: avgY });
+    }
+
+    return result;
+  };
 
   useEffect(() => {
     if (!canvasRef.current || clicks.length === 0) return;
@@ -96,12 +128,52 @@ const JourneyVisualiser = () => {
     ctx.lineWidth = 2;
     ctx.beginPath();
 
-    clicks.forEach((p, i) => {
-      if (i === 0) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y)
-    });
 
-    ctx.stroke();
+    /* sleep helper
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); */
+
+    // ✅ Define drawJourney inside the effect
+    const drawJourney = (ctx, clicks) => {
+      if (!clicks || clicks.length < 2) return;
+
+
+      // ✅ Optional: sort by timestamp if needed
+      // const sorted = [...clicks].sort((a, b) => a.timestamp - b.timestamp);
+      const orderedClicks = [...clicks].sort((a, b) => a.timestamp - b.timestamp);
+      const cleanedClicks = resampleClicks(orderedClicks, 500); // 0.5s window
+
+      const threshold = 100; // pixels
+      const filteredClicks = cleanedClicks.filter((p, i, arr) => {
+        if (i === 0) return true;
+        const dx = p.x - arr[i - 1].x;
+        const dy = p.y - arr[i - 1].y;
+        return Math.sqrt(dx * dx + dy * dy) < threshold;
+      });
+
+      // ✅ Create the D3 line generator
+      const lineGen = d3.line()
+        .x(d => d.x)
+        .y(d => d.y)
+        .curve(d3.curveCatmullRom.alpha(0.5)); // smooth the spikes
+
+      // ✅ Generate an SVG path string
+      const pathString = lineGen(clicks);
+      if (!pathString) {
+        console.warn("⚠️ Path is null — check your clicks array");
+        return;
+      }
+
+      // ✅ Convert to Canvas Path2D
+      const path = new Path2D(pathString);
+
+      // ✅ Draw the path on canvas
+      ctx.stroke(path);
+    };
+
+
+    // ✅ Finally: call it!
+    drawJourney(ctx, clicks);
+
   }, [clicks]);
 
   useEffect(() => {

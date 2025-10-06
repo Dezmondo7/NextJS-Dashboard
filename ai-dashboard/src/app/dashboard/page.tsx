@@ -122,9 +122,11 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-semibold mb-4 capitalize">{active}</h1>
         <div className="bg-white dark:bg-gray-800 shadow rounded-2xl p-6 min-h-[400px]">
           <p>Welcome to the {active} section 🚀</p>
-
+          
+          <div>
           {active === "overview" && <HeatmapOverview />}
-
+          </div>
+          
           {active == "Journey" && <JourneyVisualiser />}
          {/*} <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
