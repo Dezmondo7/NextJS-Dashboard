@@ -134,7 +134,7 @@ const HeatmapOverview = () => {
       {/* Toggle Button */}
       <button
         onClick={() => setOverlay(!overlay)}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
+        className="mb-4 px-4 py-2 bg-indigo-500 text-white rounded cursor-pointer"
       >
         {overlay ? "Side-by-Side Mode" : "Overlay Mode"}
       </button>
@@ -144,22 +144,22 @@ const HeatmapOverview = () => {
         <button
           onClick={() => setCurrentSessionIndex(i => Math.max(i - 1, 0))}
           disabled={currentSessionIndex === 0}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded border-2 border-gray-500 disabled:opacity-50 cursor-pointer"
         >
-          ← Previous Session
+          ← Previous
         </button>
 
-        <span>
-          Session {currentSessionIndex + 1} of {sessionIds.length}
-          ({sessionIds[currentSessionIndex]})
+        <span className="text-gray-800">
+          User  {currentSessionIndex + 1} of {sessionIds.length}
+          <p></p>ID {sessionIds[currentSessionIndex]}
         </span>
 
         <button
           onClick={() => setCurrentSessionIndex(i => Math.min(i + 1, sessionIds.length - 1))}
           disabled={currentSessionIndex === sessionIds.length - 1}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded border-2 hover: disabled:opacity-50 cursor-pointer"
         >
-          Next Session →
+          Next →
         </button>
       </div>
 
