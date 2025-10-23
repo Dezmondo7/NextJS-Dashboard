@@ -8,6 +8,7 @@ import HeatmapOverview from "../components/HeatmapOverview";
 import LiveCount from '../components/LiveCounter';
 import LiveCounter from "../components/LiveCounter";
 import JourneyVisualiser from '../components/JourneyVisualiser'
+import WeeklyStats from "../components/WeeklyStats";
 
 //Tyescript error handling
 type NavItem = {
@@ -26,7 +27,7 @@ export default function DashboardPage() {
   const navItems: NavItem[] = [
     { id: "overview", label: "Live View", icon: <Home size={20} /> },
     { id: "Journey", label: "User Journey", icon: <BarChart size={20} /> },
-    { id: "chat", label: "Monthly Campaign View", icon: <MessageSquare size={20} /> },
+    { id: "Daily", label: "Engagement Stats", icon: <MessageSquare size={20} /> },
     { id: "Content", label: "Content View", icon: <MessageSquare size={20} /> },
     { id: "AI", label: "AI Analysis", icon: <MessageSquare size={20} /> },
     { id: "settings", label: "Settings", icon: <Settings size={20} /> },
@@ -128,6 +129,8 @@ export default function DashboardPage() {
           </div>
           
           {active == "Journey" && <JourneyVisualiser />}
+
+          {active =='Daily' && <WeeklyStats />}
          {/*} <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
             <DashboardTable />

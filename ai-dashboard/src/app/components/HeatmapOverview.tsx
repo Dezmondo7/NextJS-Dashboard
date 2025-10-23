@@ -129,6 +129,8 @@ const HeatmapOverview = () => {
     );
   }, [events, overlay, sessionIds, currentSessionIndex]);
 
+      if (loading) return <div className="text-gray-400 text-center py-10">Loading User Journeys...</div>;
+
   return (
     <div className="p-4">
       {/* Toggle Button */}
