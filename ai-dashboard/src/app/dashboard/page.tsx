@@ -7,6 +7,8 @@ import DashboardTable from "../components/DashboardTable";
 import HeatmapOverview from "../components/HeatmapOverview";
 import LiveCount from '../components/LiveCounter';
 import LiveCounter from "../components/LiveCounter";
+import JourneyVisualiser from '../components/JourneyVisualiser'
+import WeeklyStats from "../components/WeeklyStats";
 
 //Tyescript error handling
 type NavItem = {
@@ -24,8 +26,8 @@ export default function DashboardPage() {
   //Navigation
   const navItems: NavItem[] = [
     { id: "overview", label: "Live View", icon: <Home size={20} /> },
-    { id: "analytics", label: "Weekly View", icon: <BarChart size={20} /> },
-    { id: "chat", label: "Monthly Campaign View", icon: <MessageSquare size={20} /> },
+    { id: "Journey", label: "User Journey", icon: <BarChart size={20} /> },
+    { id: "Daily", label: "Engagement Stats", icon: <MessageSquare size={20} /> },
     { id: "Content", label: "Content View", icon: <MessageSquare size={20} /> },
     { id: "AI", label: "AI Analysis", icon: <MessageSquare size={20} /> },
     { id: "settings", label: "Settings", icon: <Settings size={20} /> },
@@ -121,8 +123,14 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-semibold mb-4 capitalize">{active}</h1>
         <div className="bg-white dark:bg-gray-800 shadow rounded-2xl p-6 min-h-[400px]">
           <p>Welcome to the {active} section 🚀</p>
+          
+          <div>
+          {active === "overview" && <HeatmapOverview />}
+          </div>
+          
+          {active == "Journey" && <JourneyVisualiser />}
 
-          <HeatmapOverview />
+          {active =='Daily' && <WeeklyStats />}
          {/*} <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
             <DashboardTable />
